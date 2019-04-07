@@ -31,5 +31,5 @@
 *.out
 *.app
 
-# Compiled Static libraries
+# VSCode Configurations Folder
 .vscode/
