@@ -2,8 +2,9 @@
 
 #include <Arduino.h>
 #include <HardwareSerial.h>
+#include "WiFi.h"
 
-HardwareSerial mySerial(2);
+HardwareSerial sensorSerial(2);
 
 #define RXD2 16
 #define TXD2 17
@@ -18,19 +19,22 @@ int led = 13;
 void setup()
 {
 	Serial.begin(9600);
-	mySerial.begin(9600, SERIAL_8N1, RXD2, TXD2);
+	sensorSerial.begin(9600, SERIAL_8N1, RXD2, TXD2);
+	WiFi.mode(WIFI_MODE_STA);
+	Serial.print("Device MAC ID: ");
+	Serial.println(WiFi.macAddress());
 	delay(4000);
 
-	mySerial.write(0XA5);
-	mySerial.write(0X55);
-	mySerial.write(0X3F);
-	mySerial.write(0X39);
+	sensorSerial.write(0XA5);
+	sensorSerial.write(0X55);
+	sensorSerial.write(0X3F);
+	sensorSerial.write(0X39);
 	delay(100);
 
-	mySerial.write(0XA5);
-	mySerial.write(0X56);
-	mySerial.write(0X02);
-	mySerial.write(0XFD);
+	sensorSerial.write(0XA5);
+	sensorSerial.write(0X56);
+	sensorSerial.write(0X02);
+	sensorSerial.write(0XFD);
 	delay(100);
 }
 
@@ -43,9 +47,9 @@ void loop()
 	uint16_t IAQ;
 	int16_t Altitude;
 	uint8_t IAQ_accuracy;
-	while (mySerial.available())
+	while (sensorSerial.available())
 	{
-		Re_buf[counter] = (unsigned char)mySerial.read();
+		Re_buf[counter] = (unsigned char)sensorSerial.read();
 
 		if (counter == 0 && Re_buf[0] != 0x5A)
 			return;
